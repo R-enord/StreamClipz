@@ -5,7 +5,8 @@ Run this on the computer that hosts the app (your laptop):
 
     python scripts/start.py            (or double-click start.bat on Windows)
 
-Stop it with Ctrl+C.
+If no login exists yet, it asks once in this window and creates it using your
+computer's user name. You type the password yourself. Stop the server with Ctrl+C.
 """
 from __future__ import annotations
 
@@ -19,6 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from app import cli  # noqa: E402
 from app.config import Settings  # noqa: E402
 from app.db import connect, init_db  # noqa: E402
 
@@ -62,31 +64,49 @@ def has_accounts(settings: Settings) -> bool:
         conn.close()
 
 
+def ensure_account(settings: Settings) -> bool:
+    """Make sure a login exists. If none does, offer to create it now in this window."""
+    if has_accounts(settings):
+        return True
+    name = cli.default_username()
+    print(f"There is no login account yet. Your sign-in name will be: {name}")
+    if not sys.stdin.isatty():
+        print("Create it by running this in the StreamClipz folder:")
+        print(f'    "{sys.executable}" -m app.cli create-user --admin')
+        return False
+    print("You will be asked for a password. Nothing shows while you type. That is normal.")
+    answer = input("Create it now? Press Enter for yes, or type n: ").strip().lower()
+    if answer in ("n", "no"):
+        return False
+    return cli.main(["create-user", "--admin"]) == 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Start StreamClipz for this computer and your phone.")
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args(argv)
 
     settings = Settings()
-    if not has_accounts(settings):
-        print("There is no login account yet. Create one first. You type the password yourself:")
-        print("    python -m app.cli create-user yourname --admin")
+    if not ensure_account(settings):
+        print()
+        print("The app was not started because there is no login yet. Run start.bat again to create it.")
         return 1
 
     port = args.port
     print()
     print("StreamClipz is starting.")
     print()
-    print(f"  On this computer:          http://127.0.0.1:{port}")
+    print(f"  On this computer:            http://127.0.0.1:{port}")
     ip = lan_ip()
     if ip:
-        print(f"  Phone, same Wi-Fi:         http://{ip}:{port}")
+        print(f"  Phone, same Wi-Fi:           http://{ip}:{port}")
     else:
-        print("  Phone, same Wi-Fi:         no Wi-Fi address found (check the connection)")
+        print("  Phone, same Wi-Fi:           no Wi-Fi address found (check the connection)")
     ts = tailscale_ip()
     if ts:
         print(f"  Phone, anywhere (Tailscale): http://{ts}:{port}")
     print()
+    print("Type the 'Phone' address into your phone's browser and sign in.")
     print("If Windows asks about the firewall, allow access on Private networks.")
     print("Keep this window open. Stop with Ctrl+C.")
     print()

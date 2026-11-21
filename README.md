@@ -6,11 +6,12 @@ Local use first, structured so it can grow into a hosted product later.
 ## Start it (Windows laptop)
 
 1. Double-click **`start.bat`**. The first run sets everything up. It takes about a minute.
-2. If it says there is no login account yet, open a terminal in this folder and run
-   `.venv\Scripts\python.exe -m app.cli create-user yourname --admin`
-   You type your password at the hidden prompt yourself. It is stored only as a scrypt hash.
-3. Run `start.bat` again. It prints the link to open on your phone, for example
-   `http://192.168.1.23:8000`. Your phone must be on the same Wi-Fi.
+2. The window asks once to create your login. The sign-in name is your Windows user name
+   (the folder name under `C:\Users`). Type a password of at least 10 characters.
+   Nothing shows while you type. That is normal.
+3. The window then prints the **Phone** address, for example `http://<your laptop's IP>:8000`
+   with the real numbers filled in. Type it into your phone's browser (the phone must be on
+   the same Wi-Fi) and sign in.
 4. If Windows asks about the firewall, allow access on **Private networks**.
    Keep the window open while you use the app.
 
