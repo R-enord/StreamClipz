@@ -64,3 +64,20 @@ dashboard tabs still need to be brought in.
 - Failed logins are counted per username; 5 failures lock that name for 15 minutes.
 - The app is for your own devices on a private network. It is not ready for the public
   internet without HTTPS and a review. Set `STREAMCLIPZ_COOKIE_SECURE=1` only behind HTTPS.
+
+## Project docs
+
+- [Architecture and phases](docs/ARCHITECTURE.md)
+- [Decisions (ADRs)](docs/decisions/0001-stack.md)
+- [Laptop runbook: start, stop, back up, update](docs/RUNBOOK.md)
+
+## Quality checks
+
+Every push runs lint and tests in GitHub Actions. To run them locally:
+
+```
+.venv/bin/pip install -r requirements-dev.txt
+.venv/bin/ruff check .
+.venv/bin/python -m pytest -q
+```
+

@@ -1,4 +1,3 @@
-from app.config import Settings
 from tests.conftest import PASSWORD
 
 

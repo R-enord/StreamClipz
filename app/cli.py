@@ -38,7 +38,8 @@ def main(argv: list[str] | None = None) -> int:
     settings = Settings()
     init_db(settings.db_path)
     username = (args.username or default_username()).strip()
-    password = getpass.getpass(f"Password for '{username}' (at least 10 characters, nothing shows while you type): ")
+    prompt = f"Password for '{username}' (at least 10 characters, nothing shows while you type): "
+    password = getpass.getpass(prompt)
     if password != getpass.getpass("Type it again: "):
         print("Passwords do not match.", file=sys.stderr)
         return 1
