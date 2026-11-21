@@ -68,6 +68,7 @@ dashboard tabs still need to be brought in.
 ## Project docs
 
 - [Architecture and phases](docs/ARCHITECTURE.md)
+- [Product: from stream to posted clip](docs/PRODUCT.md)
 - [Decisions (ADRs)](docs/decisions/0001-stack.md), [migrations and job queue](docs/decisions/0002-migrations-and-job-queue.md)
 - [Laptop runbook: start, stop, back up, update](docs/RUNBOOK.md)
 

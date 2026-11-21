@@ -48,6 +48,10 @@ published, and an audit trail for every decision.
 Clip states: `draft` → `needs_review` → `approved` or `rejected`; `approved` → `scheduled`
 → `published` → `archived`. Only a person can move a clip to `approved`.
 
+## Product flow
+
+The stages, specs and acceptance test come from an example video. See [PRODUCT.md](PRODUCT.md).
+
 ## Stack
 
 Decided in [ADR 0001](decisions/0001-stack.md): Python 3.12, FastAPI, SQLAlchemy with Alembic,
