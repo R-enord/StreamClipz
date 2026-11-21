@@ -47,6 +47,13 @@ Close the window, or press Ctrl+C in it. The phone cannot connect while it is st
 - The address can change when the Wi-Fi changes. Use the address printed in the current window.
 - If Windows Firewall asked about Python, it must be allowed on Private networks.
 
+## Database upgrades
+
+The app upgrades the database when it starts, so nothing needs to be run by hand. Back up the
+`data` folder first (see above). If the start window shows a database error, stop there. Do not
+delete the `data` folder. Copy the window text and send it. To upgrade a database manually, run
+`python -m core.migrate` in the StreamClipz folder.
+
 ## Passwords
 
 Password reset is not built yet. Keep your password in a password manager.

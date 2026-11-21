@@ -56,15 +56,18 @@ ffmpeg for media.
 
 ## Phases and done-criteria
 
-**Phase 0: Foundation** (in progress)
+**Phase 0: Foundation** (done)
 - Repository, lint, tests and CI run on every push.
 - Architecture, decisions and runbook written.
 - Login and dashboard tested.
 - Done when: CI is green and the runbook works on the laptop.
 
-**Phase 1: Core and job queue**
+**Phase 1: Core and job queue** (done)
 - Database migrations with Alembic. Job table with leases, retries and timeouts.
 - Done when: a job survives a restart and is retried once after a simulated failure.
+- Result: `core/` holds the models, migrations, queue and worker. `tests/test_worker.py`
+  covers the restart and retry cases, and `tests/test_migrations.py` covers the upgrade of the
+  first version's database.
 
 **Phase 2: Sources and import**
 - Source registry. Import a stream file the owner downloads, with checksum and metadata.
@@ -109,14 +112,13 @@ ffmpeg for media.
 
 ## Repository layout
 
-Current layout (kept until Phase 1, so the laptop's start script path does not change):
-
 ```
-app/            web app and API
+app/            web app and API (depends on core/)
+core/           database, models, migrations, job queue and worker (no imports from app/)
 scripts/        start script and maintenance scripts (scripts/start.py is used by start.bat)
 tests/          automated tests
-docs/           architecture, decisions, runbook
+docs/           architecture, decisions (ADRs), runbook
 .github/        CI and dependency updates
 ```
 
-Planned additions: `core/`, `ingest/`, `render/`, `ops/`.
+Planned additions: `ingest/`, `render/`, `ops/` (Phases 2 to 6).

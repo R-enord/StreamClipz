@@ -1,14 +1,21 @@
 import getpass
 import importlib.util
 import io
+import sqlite3
 import sys
 from pathlib import Path
 
 from app import cli
-from app.config import Settings
-from app.db import connect
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def user_rows(data_dir):
+    conn = sqlite3.connect(data_dir / "streamclipz.db")
+    try:
+        return conn.execute("SELECT username, is_admin FROM users").fetchall()
+    finally:
+        conn.close()
 
 
 def test_create_user_defaults_to_computer_user_name(tmp_path, monkeypatch):
@@ -18,11 +25,7 @@ def test_create_user_defaults_to_computer_user_name(tmp_path, monkeypatch):
     monkeypatch.setattr(getpass, "getpass", lambda prompt="": next(answers))
 
     assert cli.main(["create-user", "--admin"]) == 0
-
-    conn = connect(Settings().db_path)
-    row = conn.execute("SELECT username, is_admin FROM users").fetchone()
-    conn.close()
-    assert row["username"] == "Abdul" and row["is_admin"] == 1
+    assert user_rows(tmp_path) == [("Abdul", 1)]
 
 
 def test_mismatched_passwords_create_nothing(tmp_path, monkeypatch):
@@ -32,9 +35,7 @@ def test_mismatched_passwords_create_nothing(tmp_path, monkeypatch):
     monkeypatch.setattr(getpass, "getpass", lambda prompt="": next(answers))
 
     assert cli.main(["create-user"]) == 1
-    conn = connect(Settings().db_path)
-    assert conn.execute("SELECT COUNT(*) FROM users").fetchone()[0] == 0
-    conn.close()
+    assert user_rows(tmp_path) == []
 
 
 def test_start_without_account_and_no_terminal_stops_with_command(tmp_path, monkeypatch, capsys):

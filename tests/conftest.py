@@ -4,12 +4,13 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
 
-from app.config import Settings  # noqa: E402
-from app.db import connect  # noqa: E402
-from app.main import create_app  # noqa: E402
 from app.auth import create_user  # noqa: E402
+from app.config import Settings  # noqa: E402
+from app.main import create_app  # noqa: E402
+from core.db import make_engine, make_session_factory  # noqa: E402
 
 PASSWORD = "correct-horse-battery"
 
@@ -21,9 +22,10 @@ def settings(tmp_path):
 
 @pytest.fixture()
 def client(settings):
-    app = create_app(settings)
-    conn = connect(settings.db_path)
-    create_user(conn, "owner", PASSWORD, is_admin=True)
-    conn.close()
+    app = create_app(settings)  # migrates the database
+    engine = make_engine(settings.db_path)
+    with make_session_factory(engine)() as db:
+        create_user(db, "owner", PASSWORD, is_admin=True)
+    engine.dispose()
     with TestClient(app) as c:
         yield c

@@ -20,9 +20,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from sqlalchemy import func, select  # noqa: E402
+
 from app import cli  # noqa: E402
 from app.config import Settings  # noqa: E402
-from app.db import connect, init_db  # noqa: E402
+from core.db import make_engine, make_session_factory, migrate  # noqa: E402
+from core.models import User as UserRecord  # noqa: E402
 
 TAILSCALE_WINDOWS_PATH = Path(r"C:\Program Files\Tailscale\tailscale.exe")
 
@@ -56,12 +59,13 @@ def tailscale_ip() -> str | None:
 
 
 def has_accounts(settings: Settings) -> bool:
-    init_db(settings.db_path)
-    conn = connect(settings.db_path)
+    migrate(settings.db_path)
+    engine = make_engine(settings.db_path)
     try:
-        return conn.execute("SELECT COUNT(*) FROM users").fetchone()[0] > 0
+        with make_session_factory(engine)() as db:
+            return db.scalar(select(func.count()).select_from(UserRecord)) > 0
     finally:
-        conn.close()
+        engine.dispose()
 
 
 def ensure_account(settings: Settings) -> bool:

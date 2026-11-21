@@ -5,15 +5,17 @@
 The username defaults to your computer's user name. The password is typed at a hidden
 prompt and is never stored in plain text.
 """
+
 from __future__ import annotations
 
 import argparse
 import getpass
 import sys
 
+from core.db import make_engine, make_session_factory, migrate
+
 from .auth import create_user
 from .config import Settings
-from .db import connect, init_db
 
 FALLBACK_USERNAME = "owner"
 
@@ -36,16 +38,17 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     settings = Settings()
-    init_db(settings.db_path)
+    migrate(settings.db_path)
     username = (args.username or default_username()).strip()
     prompt = f"Password for '{username}' (at least 10 characters, nothing shows while you type): "
     password = getpass.getpass(prompt)
     if password != getpass.getpass("Type it again: "):
         print("Passwords do not match.", file=sys.stderr)
         return 1
-    conn = connect(settings.db_path)
+    engine = make_engine(settings.db_path)
     try:
-        create_user(conn, username, password, is_admin=args.admin)
+        with make_session_factory(engine)() as db:
+            create_user(db, username, password, is_admin=args.admin)
     except ValueError as exc:
         print(str(exc), file=sys.stderr)
         return 1
@@ -53,7 +56,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Could not create '{username}': {exc}", file=sys.stderr)
         return 1
     finally:
-        conn.close()
+        engine.dispose()
     print(f"Created login '{username}'. Sign in with that name and your password.")
     return 0
 

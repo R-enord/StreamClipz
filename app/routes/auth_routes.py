@@ -4,10 +4,11 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import RedirectResponse
+from sqlalchemy.orm import Session
 
 from .. import auth
 from ..config import Settings
-from ..deps import current_user, get_conn, get_settings
+from ..deps import current_user, get_db, get_settings
 from ..templating import templates
 
 router = APIRouter()
@@ -25,18 +26,17 @@ def login_submit(
     request: Request,
     username: Annotated[str, Form()],
     password: Annotated[str, Form()],
-    conn=Depends(get_conn),
+    db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
 ):
-    user = auth.authenticate(conn, settings, username, password)
+    user = auth.authenticate(db, settings, username, password)
     if user is None:
-        message = "Too many failed attempts. Wait 15 minutes and try again." if auth.is_locked(
-            conn, settings, username
-        ) else "Wrong username or password."
-        return templates.TemplateResponse(
-            request, "login.html", {"error": message}, status_code=401
-        )
-    token = auth.create_session(conn, settings, user)
+        if auth.is_locked(db, settings, username):
+            message = f"Too many failed attempts. Wait {settings.login_lock_minutes} minutes and try again."
+        else:
+            message = "Wrong username or password."
+        return templates.TemplateResponse(request, "login.html", {"error": message}, status_code=401)
+    token = auth.create_session(db, settings, user)
     response = RedirectResponse("/", status_code=303)
     response.set_cookie(
         auth.SESSION_COOKIE,
@@ -50,8 +50,8 @@ def login_submit(
 
 
 @router.post("/logout")
-def logout(request: Request, conn=Depends(get_conn)):
-    auth.delete_session(conn, request.cookies.get(auth.SESSION_COOKIE))
+def logout(request: Request, db: Session = Depends(get_db)):
+    auth.delete_session(db, request.cookies.get(auth.SESSION_COOKIE))
     response = RedirectResponse("/login", status_code=303)
     response.delete_cookie(auth.SESSION_COOKIE)
     return response

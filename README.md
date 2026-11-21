@@ -68,8 +68,14 @@ dashboard tabs still need to be brought in.
 ## Project docs
 
 - [Architecture and phases](docs/ARCHITECTURE.md)
-- [Decisions (ADRs)](docs/decisions/0001-stack.md)
+- [Decisions (ADRs)](docs/decisions/0001-stack.md), [migrations and job queue](docs/decisions/0002-migrations-and-job-queue.md)
 - [Laptop runbook: start, stop, back up, update](docs/RUNBOOK.md)
+
+## Layout
+
+- `app/`: the web app (sign-in, dashboard, phone pages).
+- `core/`: database, models, migrations (Alembic), job queue and worker.
+- `docs/`: architecture, decisions and the laptop runbook.
 
 ## Quality checks
 
@@ -80,4 +86,6 @@ Every push runs lint and tests in GitHub Actions. To run them locally:
 .venv/bin/ruff check .
 .venv/bin/python -m pytest -q
 ```
+
+The [architecture plan](docs/ARCHITECTURE.md) lists the phases and what "done" means for each.
 
