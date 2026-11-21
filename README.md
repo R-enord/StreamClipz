@@ -78,8 +78,10 @@ dashboard tabs still need to be brought in.
 Run this on the computer that holds the stream. It writes a short list you can send:
 
 ```
-.venv\Scripts\python.exe -m core.moments "C:\path\to\stream.mkv" --out stream-moments.json --previews 5
+py -3 -m core.moments "C:\path\to\stream.mkv" --out stream-moments.json --previews 5
 ```
+
+On Windows, `start.bat` installs what this needs into your normal Python, so no virtual environment is used there.
 
 It needs ffmpeg on the computer. The list is a first pass based on loudness.
 
