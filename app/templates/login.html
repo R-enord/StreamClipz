@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Sign in · StreamClipz{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>StreamClipz</h1>
+  <p class="muted">Sign in to continue.</p>
+  {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+  <form method="post" action="/login" autocomplete="on">
+    <label>Username
+      <input name="username" autocomplete="username" autocapitalize="none" required autofocus>
+    </label>
+    <label>Password
+      <input name="password" type="password" autocomplete="current-password" required>
+    </label>
+    <button type="submit" class="primary">Sign in</button>
+  </form>
+</section>
+{% endblock %}
