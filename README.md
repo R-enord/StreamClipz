@@ -68,9 +68,20 @@ dashboard tabs still need to be brought in.
 ## Project docs
 
 - [Architecture and phases](docs/ARCHITECTURE.md)
-- [Product: from stream to posted clip](docs/PRODUCT.md)
+- [Product: from stream to posted clip](docs/PRODUCT.md) (product name: Clipz Hub)
+- [Style guide: the eight families](docs/STYLE.md)
 - [Decisions (ADRs)](docs/decisions/0001-stack.md), [migrations and job queue](docs/decisions/0002-migrations-and-job-queue.md)
 - [Laptop runbook: start, stop, back up, update](docs/RUNBOOK.md)
+
+## Scan a stream for moments
+
+Run this on the computer that holds the stream. It writes a short list you can send:
+
+```
+.venv\Scripts\python.exe -m core.moments "C:\path\to\stream.mkv" --out stream-moments.json --previews 5
+```
+
+It needs ffmpeg on the computer. The list is a first pass based on loudness.
 
 ## Layout
 

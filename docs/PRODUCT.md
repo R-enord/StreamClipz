@@ -35,6 +35,21 @@ loudness -16.0 LUFS. The example uses a real streamer's footage. That footage is
 - **Rules:** every package needs a person's approval. Claim words such as "first" or "exclusive"
   are flagged for checking. AI footage or voices are refused for campaigns that do not allow them.
 
+## Long streams: how they reach us (Phase 2)
+
+Streams are often 8 hours or more. They never travel through chat or the cloud. The flow is:
+
+1. **Scan on your computer.** `python -m core.moments <stream file> --out list.json --previews 5`.
+   It reads only the audio, so an hour takes about 15 seconds on the test machine. Eight hours
+   should take a few minutes on a laptop (not yet measured there).
+2. **Send the small files.** The list (a few kilobytes) and the previews (about 175 KB each for
+   30 seconds). The stream itself stays on the laptop.
+3. **Plan the edit.** We pick the moments, write hooks, captions and hashtags, and choose a
+   style family from `docs/STYLE.md`.
+4. **Render on the computer.** Phase 3 adds the renderer. Until then, the cuts are made locally.
+
+The scan is a first version based on loudness. It will need tuning on real streams.
+
 ## Source intake (Phase 2)
 
 - Input is a file the owner provides, downloaded or exported from a source they are allowed to use.
@@ -65,5 +80,5 @@ and whether it requires sharing source code. AI model files can carry their own 
 
 ## Naming
 
-The example brands the product "CLIP STUDIO". This repository is named StreamClipz. Choose the
-product name before anything is published.
+Product name: **Clipz Hub** (chosen by the owner). The repository is still named StreamClipz,
+and the screens still say StreamClipz. Renaming the repository and screens is a separate decision.

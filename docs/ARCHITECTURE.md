@@ -73,7 +73,8 @@ ffmpeg for media.
   covers the restart and retry cases, and `tests/test_migrations.py` covers the upgrade of the
   first version's database.
 
-**Phase 2: Sources and import**
+**Phase 2: Sources and import** (started)
+- Done so far: media checks (`core/media.py`) and the local moment scanner (`core/moments.py`).
 - Source registry. Import a stream file the owner downloads, with checksum and metadata.
 - One platform adapter, only after its terms are checked.
 - Done when: an imported file appears as a Stream with the right length and an audio check.
