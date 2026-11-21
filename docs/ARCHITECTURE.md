@@ -79,7 +79,9 @@ ffmpeg for media.
 - One platform adapter, only after its terms are checked.
 - Done when: an imported file appears as a Stream with the right length and an audio check.
 
-**Phase 3: Moments and clips**
+**Phase 3: Moments and clips** (started)
+- Built: two render styles, keyword punch and streamer split (`core/render.py`). Scanning works in two-hour parts.
+- Still to do: the other GTA styles, and clip choice from the scan.
 - Find candidate moments and render clips from a sample file.
 - Done when: golden tests pass on a short sample and a 1-hour sample produces reviewed clips.
 

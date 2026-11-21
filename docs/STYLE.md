@@ -1,59 +1,55 @@
-# Style guide: what the clips should look like
+# Style guide
 
-Status: 2026-11-21. Built from 15 reference clips the owner supplied (17 to 115 seconds, 14 of
-them 9:16). The references are other creators' work. They are kept out of this repository. This
-guide describes patterns, not footage, wording, music or creator marks, and nothing in it may be
-copied from a reference.
+Status: 2026-11-21. Built from 15 reference clips, which are kept out of this repository. This
+guide describes patterns only: no footage, wording, music or creator marks are copied.
 
-## Eight families
+## The styles, in plain words
 
-Each family is a template for the renderer (Phase 3). Length and cut pace are defaults.
+| Code | Plain name | What it looks like | Status |
+| --- | --- | --- | --- |
+| F6 | Keyword punch | One or two big outlined words at a time, the key word in colour. Like the captions in the example video | Built |
+| F7 | Streamer split | The streamer's face on top, gameplay below, short captions over the gameplay | Built |
+| F1 | Numbered tips | A big number and a title pill ("1. GUNS"), five to seven points | Planned |
+| F2 | Warning list | A red "NEVER #1" label at the bottom third, captions above it | Planned |
+| F3 | Stat cards | Neon cards with numbers, times or prices, and a quote card. Every number must be verified | Planned |
+| F4 | Icon and HUD inserts | Wanted-star card, route card, icon badges that pop up with a caption | Planned |
+| F5 | Mood and mystery | A title card at the top, a black-and-white look for tense parts, single serif words for mood edits | Planned |
+| F8 | How-to | Step counters and interface motion graphics, for our own tutorials | Planned |
 
-| Family | What it looks like | Length | Cuts per minute | Use it for |
-| --- | --- | --- | --- | --- |
-| F1 Numbered tips | Big number and short title pill ("1. GUNS"), 5 to 7 points, one coloured keyword per caption | 40 to 75 s | 15 to 30 | GTA tips |
-| F2 Warning list | Red "NEVER #n" pill at the lower third, captions above it, map or HUD inserts | 40 to 50 s | 20 to 30 | GTA "never do this" |
-| F3 Stat cards | Neon cards with numbers (time, money, counts) and a short quote card | 60 to 90 s | 15 to 25 | GTA facts. Every number must be verified |
-| F4 HUD and icon inserts | Wanted-star card, route card, icon badges that appear with a caption | 60 to 70 s | 20 to 30 | GTA gameplay tips |
-| F5 Mood and mystery | Title card at the top (two lines, one highlighted word), black-and-white grade for tense parts, a single serif word centred for mood edits | 15 to 30 s | 0 to 4 | GTA discovery and mood |
-| F6 Keyword punch | One or two words at a time, big and outlined, synced to the action or speech | 60 to 80 s | 20 to 30 | Streamer clips and gameplay |
-| F7 Streamer split | Talking head at the top, gameplay at the bottom, short captions with a yellow or green keyword | 60 to 120 s | 1 to 7 | Streamer reactions |
-| F8 How-to | UI motion graphics, step counters ("1/4"), a chat-activity graph, mission-style progress | 30 to 60 s | 0 to 10 | Clipz Hub's own tutorials, later |
+Build order: F6 and F7 first, because they fit your streams. Then F1 and F2 for GTA tips, then F3 to F5.
 
-## Shared rules (all families)
+## What the 15 references showed
 
-- **Format:** 1080×1920, 30 fps, H.264 High profile, AAC 128 kbps. The references are small
-  (576 px wide); our output is larger for better quality on phones.
-- **Loudness:** -16 LUFS integrated, true peak no higher than -1 dBTP. The references range from
-  -13.7 to -26.6 LUFS, so we normalise every clip.
-- **Hook:** the first 1 to 2 seconds show the hook, as a title card or the first caption.
-- **Captions:** uppercase, heavy outlined sans, at most five words per beat, one keyword in colour.
-  Keep them in the lower-middle third. In F7, keep them off the face.
-- **Progress bar:** a thin coloured bar along the bottom edge that fills as the clip plays.
-- **Watermark:** our handle only, bottom-left, as the owner's rule says. Campaign clips follow the
-  campaign's own watermark rule. Never reuse a creator's mark.
-- **End card:** our handle and one short prompt. No copy of any platform's interface.
-- **Colour:** dark backgrounds with accent colours (pink, yellow, green, orange). Pick our own
-  palette before launch and keep it consistent.
-- **Fonts:** heavy, condensed or bold italic sans. Use fonts with an open licence, and check it.
+- Sound varies a lot (-13.7 to -26.6 LUFS), so every clip is normalised to -16 LUFS.
+- Cut speed varies from almost none (mood edits) to about 30 cuts a minute (fast tips).
+- Captions are uppercase, heavy and outlined. Most use one key word in colour.
+- The hook is the first thing on screen, usually a title or the first caption.
+- Most use a thin progress bar along the bottom edge.
+- Many have a creator's mark in a corner. We use only our own mark.
 
-## Rules that come from the business
+## Shared rules
+
+- **Format:** 1080×1920, 30 fps, H.264, AAC 128 kbps.
+- **Loudness:** -16 LUFS, true peak no higher than -1.5 dBTP.
+- **Hook:** the first one or two seconds show the hook.
+- **Captions:** at most five words per beat. One key word in colour. Lower-middle of the picture,
+  and clear of the face in the split style.
+- **Progress bar:** a thin bar along the bottom edge.
+- **Watermark:** our mark only. Campaign clips follow the campaign's own watermark rule.
+- **Colour:** dark background with accent colours. We choose our own palette before launch.
+- **Fonts:** heavy sans-serif. Use only fonts with an open licence.
+
+## Rules from the business
 
 - **Style only.** No reference footage, music, wording or creator marks are used.
-- **Rights.** Only footage we have the right to use. Campaign rules override this guide. Game
-  footage has its publisher's terms, so check them before any clip earns money.
-- **No AI voice or AI footage** in campaign clips. The originals may use an AI voice, but never
-  without saying what is generated.
+- **Rights.** Only footage we have the right to use. Campaign rules come first. Game footage has
+  its publisher's terms, so check them before any clip earns money.
+- **No AI voice or AI footage** in campaign clips.
 - **Facts only.** Every tip, warning and number needs a verified source, written into the post
-  package. A neutral line is used when nothing is verified (see `docs/PRODUCT.md`).
+  package. When nothing is verified, a neutral hook is used instead.
 
-## Mixing the families
-
-The owner wants GTA motion graphics mixed with streamer clips. Two lanes, one brand:
+## Mixing
 
 1. **Streamer lane:** F6 or F7 on a streamer's clip, with our captions, hook and hashtags.
-2. **GTA lane:** F1 to F5 on gameplay we have the right to use, with motion graphics.
-3. **Mixed:** a streamer clip with an F3 stat card or F4 insert as a middle beat, and an F5 title
-   card as the hook.
-
-Each finished clip records its family, its sources and who approved it.
+2. **GTA lane:** F1 to F5 on gameplay we have the right to use.
+3. **Mixed:** a streamer clip with an F3 stat card or F4 insert as a middle beat, and an F5 title as the hook.

@@ -1,58 +1,46 @@
-# Runbook (laptop)
-
-## Start
-
-1. In the StreamClipz folder, double-click `start.bat`.
-2. Wait for the line that starts with `Phone, same Wi-Fi:`. Open that address on your phone.
-3. If Tailscale is installed and connected, the window also prints a `Phone, anywhere` address.
-
-## Stop
-
-Close the window, or press Ctrl+C in it. The phone cannot connect while it is stopped.
+# Runbook (Windows laptop)
 
 ## Where things are
 
 | What | Where |
 | --- | --- |
-| App code | the StreamClipz folder |
-| Login database | `StreamClipz\data\streamclipz.db` |
-| Python packages | your normal Python (installed by `start.bat`) |
+| The app | `C:\Users\<you>\ClipzHub` |
+| Your data (login, database, logs) | `C:\Users\<you>\ClipzHub-data` |
+| Saved copies of replaced files (from updates) | `C:\Users\<you>\ClipzHub-backups` |
+| The older copy, from before the switch | `C:\Users\<you>\StreamClipz`. Delete it once the new one works |
 
-## Back up (before every update and every change to data)
+## Start and stop
 
-1. Stop the app.
-2. Copy the whole `data` folder to an external drive. Use Copy, not Move.
-3. Keep the copy until the new version has run for a few days.
+- **Start:** double-click `start.bat` in ClipzHub. Keep the window open.
+- **Stop:** close the window, or press Ctrl+C in it.
 
-## Update the app
+## Update (no re-download needed)
 
-1. Stop the app and back up the `data` folder.
-2. Download the latest ZIP (the link is in the README) and extract it into a new folder.
-3. Copy the backed-up `data` folder into the new folder so your login is kept.
-4. Start the app from the new folder with `start.bat`.
-5. Sign in on the phone. If that works, keep the old folder for a few days, then remove it.
+1. Double-click `update.bat` in ClipzHub. It downloads the latest version, keeps your data, and saves
+   the files it replaces.
+2. Double-click `start.bat`.
 
-## Restore from a backup
+## Back up your data
 
 1. Stop the app.
-2. Rename the broken folder (for example `StreamClipz-broken`). Do not delete it yet.
-3. Copy the backup `data` folder into the StreamClipz folder.
+2. Copy the `ClipzHub-data` folder to an external drive. Use Copy, not Move.
+
+Do this before any large change.
+
+## Restore a backup
+
+1. Stop the app.
+2. Rename `ClipzHub-data` to `ClipzHub-data-broken`. Do not delete it yet.
+3. Copy your backup into a new folder named `ClipzHub-data`.
 4. Start the app.
 
 ## The phone cannot connect
 
-- Check that the start window is still open and the laptop is awake.
-- Home: the phone must be on the same Wi-Fi as the laptop, not mobile data.
-- Away: Tailscale must be connected on both the laptop and the phone.
-- The address can change when the Wi-Fi changes. Use the address printed in the current window.
-- If Windows Firewall asked about Python, it must be allowed on Private networks.
-
-## Database upgrades
-
-The app upgrades the database when it starts, so nothing needs to be run by hand. Back up the
-`data` folder first (see above). If the start window shows a database error, stop there. Do not
-delete the `data` folder. Copy the window text and send it. To upgrade a database manually, run
-`python -m core.migrate` in the StreamClipz folder.
+- Check that the start window is open and the laptop is awake.
+- At home, the phone must be on the same Wi-Fi as the laptop, not on mobile data.
+- Away from home, Tailscale must be connected on both the laptop and the phone.
+- Use the address printed in the current window. It can change when the Wi-Fi changes.
+- If Windows asked about the firewall, allow Python on Private networks.
 
 ## Passwords
 

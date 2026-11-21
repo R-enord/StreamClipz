@@ -78,3 +78,16 @@ def test_a_file_without_sound_is_refused_plainly(tmp_path):
     not_audio.write_text("this is not a recording")
     with pytest.raises(MediaError):
         moments.per_second_levels(not_audio)
+
+
+def test_parts_each_get_their_own_candidates():
+    rms = np.full(600, -40.0)
+    rms[100:125] = -6.0
+    rms[400:425] = -6.0
+    peak = np.full(600, -30.0)
+    peak[100:125] = -3.0
+    peak[400:425] = -3.0
+    picks = moments.candidates_for_levels(rms, peak, top=3, chunk_s=300)
+    assert {pick["part"] for pick in picks} == {1, 2}
+    assert moments.chunk_ranges(600, 300) == [(0, 300), (300, 600)]
+    assert moments.chunk_ranges(600, None) == [(0, 600)]

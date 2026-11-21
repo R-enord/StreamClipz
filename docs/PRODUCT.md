@@ -10,8 +10,8 @@ loudness -16.0 LUFS. The example uses a real streamer's footage. That footage is
 | --- | --- | --- | --- | --- |
 | 01 HOOK | The opening segment is chosen as the hook | Ranks candidate moments; the opening line or moment can be the hook | `core` moments (Phase 3) | planned |
 | 02 CUT | "Drag edge / find the moment" | Sets in and out points around a moment | moments and review screen (Phases 3 and 4) | planned |
-| 03 REFRAME | "Keyframe / punch into the reaction"; a 9:16 crop box moves and eases over time | Tracks the subject and moves a 9:16 crop with smoothing | `render.reframe` (Phase 3) | planned |
-| 04 FINISH | "Render / caption, mix, export"; boxed on-screen captions; H.264 | Burns in caption beats, sets the audio loudness, exports MP4 | `render.finish` (Phase 3) | planned |
+| 03 REFRAME | "Keyframe / punch into the reaction"; a 9:16 crop box moves and eases over time | Tracks the subject and moves a 9:16 crop with smoothing | `core/render.py` (Phase 3) | built for two styles |
+| 04 FINISH | "Render / caption, mix, export"; boxed on-screen captions; H.264 | Burns in caption beats, sets the audio loudness, exports MP4 | `core/render.py` (Phase 3) | built for two styles |
 | 05 SHIP | Not shown in the example. The title says "CLIP IT. SHIP IT." | Post text: hook, caption and hashtags. A person approves. Posting is manual, with a checklist | `core.content` (text rules done); publish (Phase 5) | text rules done |
 
 ## Specs taken from the example
@@ -39,14 +39,15 @@ loudness -16.0 LUFS. The example uses a real streamer's footage. That footage is
 
 Streams are often 8 hours or more. They never travel through chat or the cloud. The flow is:
 
-1. **Scan on your computer.** `python -m core.moments <stream file> --out list.json --previews 5`.
-   It reads only the audio, so an hour takes about 15 seconds on the test machine. Eight hours
+1. **Scan on your computer, in two-hour parts.**
+   `py -3 -m core.moments "<stream>" --out list.json --previews 5 --chunk-hours 2`.
+   It reads only the audio. An hour took about 14 seconds on the test machine, so eight hours
    should take a few minutes on a laptop (not yet measured there).
 2. **Send the small files.** The list (a few kilobytes) and the previews (about 175 KB each for
-   30 seconds). The stream itself stays on the laptop.
-3. **Plan the edit.** We pick the moments, write hooks, captions and hashtags, and choose a
-   style family from `docs/STYLE.md`.
-4. **Render on the computer.** Phase 3 adds the renderer. Until then, the cuts are made locally.
+   30 seconds). The stream stays on the laptop.
+3. **Plan the edit.** We pick the moments, write the hooks, captions and hashtags, and choose a
+   style from `docs/STYLE.md`.
+4. **Render on the computer.** `py -3 -m core.render` makes the finished clip (see the README).
 
 The scan is a first version based on loudness. It will need tuning on real streams.
 
@@ -80,5 +81,6 @@ and whether it requires sharing source code. AI model files can carry their own 
 
 ## Naming
 
-Product name: **Clipz Hub** (chosen by the owner). The repository is still named StreamClipz,
-and the screens still say StreamClipz. Renaming the repository and screens is a separate decision.
+Product name: **Clipz Hub**. The app screens and the start window use it. The GitHub repository
+and the older copy on the laptop are still named StreamClipz. Renaming the repository changes the
+download address, so it is your decision on GitHub.

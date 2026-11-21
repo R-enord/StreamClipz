@@ -1,105 +1,57 @@
-# StreamClipz
+# Clipz Hub
 
-A login-protected web app that runs on your own computer and opens on your phone.
-Local use first, structured so it can grow into a hosted product later.
+Clipz Hub turns long streams into short, captioned clips and the post text for each one. You
+approve every clip, and you post it yourself. It runs on your computer for now.
 
-## Start it (Windows laptop)
+The GitHub repository is still named StreamClipz.
 
-1. Make sure Python 3 is installed (python.org; tick **Add python.exe to PATH** on the first screen).
-   Then double-click **`start.bat`**. The first run installs the app's parts. It takes about a minute.
-2. The window asks once to create your login. The sign-in name is your Windows user name
-   (the folder name under `C:\Users`). Type a password of at least 10 characters.
-   Nothing shows while you type. That is normal.
-3. The window then prints the **Phone** address, for example `http://<your laptop's IP>:8000`
-   with the real numbers filled in. Type it into your phone's browser (the phone must be on
-   the same Wi-Fi) and sign in.
-4. If Windows asks about the firewall, allow access on **Private networks**.
-   Keep the window open while you use the app.
+## Windows: first-time setup (once)
 
-**Away from home:** install the free Tailscale app on the laptop and the phone and sign in
-to both yourself. Then `start.bat` also prints a Tailscale link that works anywhere.
+1. Install Python 3 from python.org. On the first screen, tick **Add python.exe to PATH**.
+2. Install ffmpeg (free, from ffmpeg.org). Check it: open Command Prompt and type `ffmpeg -version`.
+3. Download the code: `https://github.com/R-enord/StreamClipz/archive/refs/heads/claude/focused-brahmagupta-22ndjd.zip`
+4. Extract the ZIP into `C:\Users\<you>`. Rename the folder it creates to `ClipzHub`.
+5. Double-click `start.bat` in ClipzHub. It copies your old login data if there is any, and asks you
+   to create a login if there is none.
 
-The laptop must be on and the window must stay open. If it sleeps, shuts down or loses power,
-the link stops working until you start it again.
+After that, updates are one double-click: `update.bat`. See [the runbook](docs/RUNBOOK.md).
 
-## Start it (other systems)
+## Commands
 
-```bash
-python3 -m venv .venv
-.venv/bin/pip install -r requirements-dev.txt
-.venv/bin/python -m app.cli create-user yourname --admin
-.venv/bin/python scripts/start.py
-```
+Open a Command Prompt in the ClipzHub folder (click the address bar, type `cmd`, press Enter).
 
-## What's here
-
-| Path | Purpose |
-| --- | --- |
-| `start.bat` | Windows double-click launcher (first-run setup, then starts the app) |
-| `scripts/start.py` | Starts the server and prints the phone link |
-| `app/main.py` | App factory (`create_app`), wiring of routers and static files |
-| `app/config.py` | Settings from environment variables (see `.env.example`) |
-| `app/db.py` | SQLite schema and connection handling (`data/streamclipz.db`) |
-| `app/security.py` | scrypt password hashing, hashed session tokens |
-| `app/auth.py` | Login, sessions, lockout after repeated failures |
-| `app/routes/` | `auth_routes` (login/logout), `pages` (dashboard), `api` (JSON) |
-| `app/templates/`, `app/static/` | Phone-friendly pages and styles |
-| `app/cli.py` | Create accounts on the server: `python -m app.cli create-user` |
-| `tests/` | Pytest suite for login, lockout, sessions and API access |
-
-Run the tests. On Windows: `py -m pip install --user -r requirements-dev.txt`, then `py -m pytest`.
-Elsewhere: `.venv/bin/python -m pytest`.
-
-## SnipRiot integration (pending)
-
-The SnipRiot worker writes its state to `data/snipriot/status.json`. The
-`/api/status` endpoint reads that file read-only, and the dashboard shows it. The
-SnipRiot worker code itself is not in this repository yet, so the clip pipeline, job inbox and
-dashboard tabs still need to be brought in.
-
-## Security notes
-
-- Passwords: scrypt. Sessions: random 256-bit tokens; only their SHA-256 is stored.
-- Cookies are `HttpOnly` and `SameSite=Lax`. Logout deletes the server-side session.
-- Failed logins are counted per username; 5 failures lock that name for 15 minutes.
-- The app is for your own devices on a private network. It is not ready for the public
-  internet without HTTPS and a review. Set `STREAMCLIPZ_COOKIE_SECURE=1` only behind HTTPS.
-
-## Project docs
-
-- [Architecture and phases](docs/ARCHITECTURE.md)
-- [Product: from stream to posted clip](docs/PRODUCT.md) (product name: Clipz Hub)
-- [Style guide: the eight families](docs/STYLE.md)
-- [Decisions (ADRs)](docs/decisions/0001-stack.md), [migrations and job queue](docs/decisions/0002-migrations-and-job-queue.md)
-- [Laptop runbook: start, stop, back up, update](docs/RUNBOOK.md)
-
-## Scan a stream for moments
-
-Run this on the computer that holds the stream. It writes a short list you can send:
+Find moments in a stream, in two-hour parts, with short previews:
 
 ```
-py -3 -m core.moments "C:\path\to\stream.mkv" --out stream-moments.json --previews 5
+py -3 -m core.moments "C:\path\to\stream.mkv" --out stream-moments.json --previews 5 --chunk-hours 2
 ```
 
-On Windows, `start.bat` installs what this needs into your normal Python, so no virtual environment is used there.
-
-It needs ffmpeg on the computer. The list is a first pass based on loudness.
-
-## Layout
-
-- `app/`: the web app (sign-in, dashboard, phone pages).
-- `core/`: database, models, migrations (Alembic), job queue and worker.
-- `docs/`: architecture, decisions and the laptop runbook.
-
-## Quality checks
-
-Every push runs lint and tests in GitHub Actions. To run them locally:
+Make a clip with captions (times are in seconds, so 3600 is one hour):
 
 ```
-.venv/bin/pip install -r requirements-dev.txt
-.venv/bin/ruff check .
-.venv/bin/python -m pytest -q
+py -3 -m core.render "C:\path\to\stream.mkv" --start 3600 --end 3608 --style keyword_punch --captions "TRAILER. *GAME*." "CLIP THAT." --out clip1.mp4
 ```
 
-The [architecture plan](docs/ARCHITECTURE.md) lists the phases and what "done" means for each.
+Styles: `keyword_punch` (big outlined words, the key word in colour) and `streamer_split`
+(the face on top, gameplay below). For the split, `--face X Y W H` sets where the face is,
+as fractions of the picture from 0 to 1, for example `--face 0 0 0.3 0.3`.
+A word wrapped in `*stars*` is shown in colour.
 
+## Docs
+
+- [Runbook](docs/RUNBOOK.md): start, update, back up, restore.
+- [Product](docs/PRODUCT.md): from stream to posted clip.
+- [Style guide](docs/STYLE.md): the styles, in plain words.
+- [Workflow](docs/WORKFLOW.md): campaigns, streams and two-hour parts.
+- [Architecture](docs/ARCHITECTURE.md): phases and what is done.
+- [Decisions](docs/decisions/): why we chose what we chose.
+
+## For developers
+
+```
+python -m pip install -r requirements-dev.txt
+ruff check .
+python -m pytest -q
+```
+
+The tests generate their own media. No real footage is stored in this repository.

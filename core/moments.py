@@ -135,15 +135,37 @@ def find_candidates(
     return chosen
 
 
-def scan(path: Path, *, top: int = 20) -> dict:
+def chunk_ranges(total_s: int, chunk_s: int | None) -> list[tuple[int, int]]:
+    """Split the timeline into parts of chunk_s seconds, or keep one part when chunk_s is None."""
+    if not chunk_s:
+        return [(0, total_s)]
+    return [(start, min(start + chunk_s, total_s)) for start in range(0, total_s, chunk_s)]
+
+
+def candidates_for_levels(
+    rms_db: np.ndarray, peak_db: np.ndarray, *, top: int = 20, chunk_s: int | None = None
+) -> list[dict]:
+    """Candidates for each part of the timeline. Times are counted from the start of the file."""
+    result: list[dict] = []
+    for number, (start, end) in enumerate(chunk_ranges(len(rms_db), chunk_s), start=1):
+        for pick in find_candidates(rms_db[start:end], peak_db[start:end], top=top):
+            row = asdict(pick)
+            row["start_s"] += start
+            row["end_s"] += start
+            row["part"] = number if chunk_s else None
+            result.append(row)
+    return result
+
+
+def scan(path: Path, *, top: int = 20, chunk_s: int | None = None) -> dict:
     rms_db, peak_db = per_second_levels(path)
-    candidates = find_candidates(rms_db, peak_db, top=top)
     return {
         "file": path.name,
         "duration_s": float(len(rms_db)),
         "method": METHOD,
+        "parts": len(chunk_ranges(len(rms_db), chunk_s)),
         "note": "Candidates are starting points for review, not finished cuts.",
-        "candidates": [asdict(c) for c in candidates],
+        "candidates": candidates_for_levels(rms_db, peak_db, top=top, chunk_s=chunk_s),
     }
 
 
@@ -177,9 +199,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", type=Path, required=True, help="where to write the JSON list")
     parser.add_argument("--top", type=int, default=20, help="how many candidates to keep")
     parser.add_argument("--previews", type=int, default=0, help="also write this many short previews")
+    parser.add_argument("--chunk-hours", type=float, default=None, help="scan in parts this many hours long")
     args = parser.parse_args(argv)
 
-    result = scan(args.video, top=args.top)
+    chunk_s = int(args.chunk_hours * 3600) if args.chunk_hours else None
+    result = scan(args.video, top=args.top, chunk_s=chunk_s)
     args.out.write_text(json.dumps(result, indent=2), encoding="utf-8")
     print(f"Found {len(result['candidates'])} candidates in {result['duration_s'] / 3600:.2f} h of audio.")
     print(f"List written to {args.out}")

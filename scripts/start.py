@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Start StreamClipz and print the address to open on your phone.
+"""Start Clipz Hub and print the address to open on your phone.
 
 Run this on the computer that hosts the app (your laptop):
 
@@ -75,7 +75,7 @@ def ensure_account(settings: Settings) -> bool:
     name = cli.default_username()
     print(f"There is no login account yet. Your sign-in name will be: {name}")
     if not sys.stdin.isatty():
-        print("Create it by running this in the StreamClipz folder:")
+        print("Create it by running this in the Clipz Hub folder:")
         print(f'    "{sys.executable}" -m app.cli create-user --admin')
         return False
     print("You will be asked for a password. Nothing shows while you type. That is normal.")
@@ -86,7 +86,7 @@ def ensure_account(settings: Settings) -> bool:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Start StreamClipz for this computer and your phone.")
+    parser = argparse.ArgumentParser(description="Start Clipz Hub for this computer and your phone.")
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args(argv)
 
@@ -98,7 +98,7 @@ def main(argv: list[str] | None = None) -> int:
 
     port = args.port
     print()
-    print("StreamClipz is starting.")
+    print("Clipz Hub is starting.")
     print()
     print(f"  On this computer:            http://127.0.0.1:{port}")
     ip = lan_ip()

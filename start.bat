@@ -1,9 +1,12 @@
 @echo off
-rem Double-click to start StreamClipz on Windows.
-rem The first run installs the app's parts into your normal Python (no virtual environment).
+rem Double-click to start Clipz Hub on Windows.
+rem Your data is kept in ClipzHub-data in your user folder, so updates never touch it.
 cd /d "%~dp0"
-echo StreamClipz start
+echo Clipz Hub start
 echo.
+
+if not defined STREAMCLIPZ_DATA_DIR set "STREAMCLIPZ_DATA_DIR=%USERPROFILE%\ClipzHub-data"
+if not exist "%STREAMCLIPZ_DATA_DIR%\" call :copy_old_data
 
 set "PY="
 py -3 --version >nul 2>nul
@@ -20,7 +23,7 @@ if not defined PY (
   exit /b 1
 )
 
-echo Installing or checking the app's parts. The first run takes about a minute...
+echo Checking the app's parts. The first run takes about a minute...
 %PY% -m pip install -q --user -r requirements.txt
 if errorlevel 1 (
   echo.
@@ -33,3 +36,17 @@ if errorlevel 1 (
 %PY% scripts\start.py
 echo.
 pause
+exit /b 0
+
+:copy_old_data
+rem First run with a new data folder: copy the login data from the older copy. The original stays.
+if exist "%USERPROFILE%\StreamClipz\data\" (
+  echo Copying your existing data to %STREAMCLIPZ_DATA_DIR%
+  xcopy "%USERPROFILE%\StreamClipz\data" "%STREAMCLIPZ_DATA_DIR%\" /E /I /Q >nul
+  goto :eof
+)
+if exist "%~dp0data\" (
+  echo Copying your existing data to %STREAMCLIPZ_DATA_DIR%
+  xcopy "%~dp0data" "%STREAMCLIPZ_DATA_DIR%\" /E /I /Q >nul
+)
+goto :eof
