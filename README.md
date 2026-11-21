@@ -5,7 +5,8 @@ Local use first, structured so it can grow into a hosted product later.
 
 ## Start it (Windows laptop)
 
-1. Double-click **`start.bat`**. The first run sets everything up. It takes about a minute.
+1. Make sure Python 3 is installed (python.org; tick **Add python.exe to PATH** on the first screen).
+   Then double-click **`start.bat`**. The first run installs the app's parts. It takes about a minute.
 2. The window asks once to create your login. The sign-in name is your Windows user name
    (the folder name under `C:\Users`). Type a password of at least 10 characters.
    Nothing shows while you type. That is normal.
@@ -46,7 +47,8 @@ python3 -m venv .venv
 | `app/cli.py` | Create accounts on the server: `python -m app.cli create-user` |
 | `tests/` | Pytest suite for login, lockout, sessions and API access |
 
-Run the tests with `.venv/bin/python -m pytest` (or `.venv\Scripts\python.exe -m pytest`).
+Run the tests. On Windows: `py -m pip install --user -r requirements-dev.txt`, then `py -m pytest`.
+Elsewhere: `.venv/bin/python -m pytest`.
 
 ## SnipRiot integration (pending)
 
